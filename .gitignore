@@ -1,5 +1,6 @@
 ###> symfony/framework-bundle ###
 /.env
+/docker-compose.override.yml
 /public/bundles/
 /var/
 /vendor/

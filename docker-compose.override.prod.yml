@@ -1,0 +1,38 @@
+version: '3'
+services:
+    apache:
+        build: .docker/apache
+        container_name: sf4_apache
+        ports:
+          - 80:80
+        volumes:
+          - .docker/config/vhosts:/etc/apache2/sites-enabled
+          - .:/home/wwwroot/sf4
+        depends_on:
+          - php
+
+    mysql:
+        image: mysql:5.7.17
+        container_name: sf4_mysql
+        volumes:
+            - .docker/data/db:/var/lib/mysql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: sf4
+            MYSQL_USER: sf4
+            MYSQL_PASSWORD: sf4
+
+    php:
+        build: .docker/php
+        container_name: sf4_php
+        volumes:
+          - .:/home/wwwroot/sf4
+        environment:
+           - APP_ENV=prod
+           - APP_SECRET=ChangeMe
+           - CORS_ALLOW_ORIGIN=^https?://localhost
+           - DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+        depends_on:
+          - mysql
